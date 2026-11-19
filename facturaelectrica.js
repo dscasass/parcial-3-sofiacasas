@@ -11,6 +11,30 @@ let tarifabase= 0.5; //tarifa base por kwh
 let subsidio= 0; //subsidio por estrato
 let contribucion= 0; //contrubucion por estrato
 
+
+const tarifas = { //subsidios x estrato
+    1: 0.3,
+    2: 0.2,
+    3: 0.1
+};
+
+const contribuciones = { //contribuciones x estrato
+    4: 0.1,
+    5: 0.2,
+    6: 0.3
+};
+
+const validestratos = [1, 2, 3, 4, 5, 6]; //estratos validos
+
+if (!validestratos.includes(estrato)) {
+    console.log("Estrato no válido. Por favor, ingrese un estrato entre 1 y 6.");
+} else {
+
+}
+
+const subsidio = tarifas[estrato] //0;
+
+
 switch(estrato){
     case 1:
         subsidio = 0.3;
@@ -39,4 +63,7 @@ switch(estrato){
         contribucion = 0;
 }
 
-let total = consumo * tarifabase * (1- subsidio + contribucion)
+let total = consumo * tarifabase * (1- subsidio + contribucion);
+console.log("el total a pagar por el consumo de energia electrica es: " + total.toFixed(2) + " pesos"); //tofixed para mostrar el valor redondeado o a dos decimales
+let mesaje = "el consumo de energia electrica es: " +consumo + " kwh, el estrato es: " + estrato + ", el subsidio aplicado es : " + (subsidio*100)+ "%, la contribucion aplicada seria: " + (contribucion*100) + "% y el total de pagar es: " + total.toFixed(2) + " pesos";
+console.log(mesaje); 
