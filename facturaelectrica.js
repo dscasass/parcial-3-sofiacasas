@@ -3,36 +3,43 @@ Danna sofia casas sanchez
 Grupo 1
 Problema c:Factura de energía eléctrica con subsidio y contribución por estrato
 */
+const TARIFA_KWH = 900;
+const CONSUMO_SUBSISTENCIA = 173;
+const CARGO_FIJO = 6000;
 
-let consumo = parseFloat(prompt("ingrese el consumo de energia electrica en kwh:"));
-let estrato = parseInt(prompt("Ingrese el estrato (1, 2, 3, 4, 5 o 6):"));
-
-let tarifabase= 0.5; //tarifa base por kwh
-let subsidio= 0; //subsidio por estrato
-let contribucion= 0; //contrubucion por estrato
-
-
-const tarifas = { //subsidios x estrato
-    1: 0.3,
-    2: 0.2,
-    3: 0.1
+const PORCENTAJES_SUBSIDIO = {
+  1: 0.50,
+  2: 0.40,
+  3: 0.15
 };
 
-const contribuciones = { //contribuciones x estrato
-    4: 0.1,
-    5: 0.2,
-    6: 0.3
+const PORCENTAJES_CONTRIBUCION = {
+  5: 0.50,
+  6: 0.60
 };
 
-const validestratos = [1, 2, 3, 4, 5, 6]; //estratos validos
+// 2. Entrada de datos
+const estrato = parseInt(prompt("Ingrese el estrato (1 a 6):"));
+const consumo = parseFloat(prompt("Ingrese el consumo del mes en kWh:"));
 
-if (!validestratos.includes(estrato)) {
-    console.log("Estrato no válido. Por favor, ingrese un estrato entre 1 y 6.");
-} else {
+// 3. Validaciones
+if (isNaN(estrato) || estrato < 1 || estrato > 6) {
+  alert("Estrato no válido");
+} else if (isNaN(consumo) || consumo < 0) {
+  alert("Consumo no válido");
+} else 
 
-}
+  // 4. Proceso de cálculo
+  const consumoBasico = Math.min(consumo, CONSUMO_SUBSISTENCIA);
+  const consumoExceso = consumo - consumoBasico;
 
-const subsidio = tarifas[estrato] //0;
+  const valorBasico = consumoBasico * TARIFA_KWH;
+  const valorExceso = consumoExceso * TARIFA_KWH;
+  const costoConsumo = valorBasico + valorExceso;
+
+  let subsidio = 0;
+  let contribucion = 0;
+
 
 
 switch(estrato){
@@ -61,9 +68,24 @@ switch(estrato){
         break;
     default:
         contribucion = 0;
-}
 
-let total = consumo * tarifabase * (1- subsidio + contribucion);
-console.log("el total a pagar por el consumo de energia electrica es: " + total.toFixed(2) + " pesos"); //tofixed para mostrar el valor redondeado o a dos decimales
-let mesaje = "el consumo de energia electrica es: " +consumo + " kwh, el estrato es: " + estrato + ", el subsidio aplicado es : " + (subsidio*100)+ "%, la contribucion aplicada seria: " + (contribucion*100) + "% y el total de pagar es: " + total.toFixed(2) + " pesos";
-console.log(mesaje); 
+ if (estrato >= 1 && estrato <= 3) {
+    // Subsidio aplica solo al valor del consumo básico
+    subsidio = valorBasico * PORCENTAJES_SUBSIDIO[estrato];
+  } else if (estrato === 5 || estrato === 6) {
+    // Contribución aplica a todo el costo del consumo
+    contribucion = costoConsumo * PORCENTAJES_CONTRIBUCION[estrato];
+  }
+
+  const totalPagar = costoConsumo - subsidio + contribucion + CARGO_FIJO;
+
+  // 5. Salidas (formateadas con separador de miles)
+  const mensaje = 
+    `Costo del consumo: $${costoConsumo.toLocaleString("es-CO")}\n` +
+    `Valor del subsidio: $${subsidio.toLocaleString("es-CO")}\n` +
+    `Valor de la contribución: $${contribucion.toLocaleString("es-CO")}\n` +
+    `Total a pagar: $${totalPagar.toLocaleString("es-CO")}`;
+
+  alert(mensaje);
+  console.log(mensaje);
+}
